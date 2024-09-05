@@ -5,8 +5,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import db from "@/db/db";
 
-function getSalesData(){}
+async function getSalesData(){
+    const data = await db.order.aggregate({
+        _sum: {pricePaidInCents:true},
+        _count: true
+    })
+    return {
+        amount: (data._sum.pricePaidInCents || 0) / 100,
+        numberofSales: data._count
+    }
+}
 
 export default function AdminDashboard() {
   return (
